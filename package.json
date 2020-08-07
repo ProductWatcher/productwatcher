@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:dev": "webpack --watch"
   },
   "repository": {
     "type": "git",
@@ -15,5 +16,25 @@
   "bugs": {
     "url": "https://github.com/ProductWatcher/productwatcher/issues"
   },
-  "homepage": "https://github.com/ProductWatcher/productwatcher#readme"
+  "homepage": "https://github.com/ProductWatcher/productwatcher#readme",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "body-parser": "^1.19.0",
+    "faker": "^4.1.0",
+    "morgan": "^1.10.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "@babel/preset-react": "^7.10.4",
+    "babel-loader": "^8.1.0",
+    "css-loader": "^4.2.1",
+    "eslint": "^7.6.0",
+    "nodemon": "^2.0.4",
+    "style-loader": "^1.2.1",
+    "webpack": "^4.44.1",
+    "webpack-cli": "^3.3.12"
+  }
 }

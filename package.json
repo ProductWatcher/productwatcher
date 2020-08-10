@@ -33,6 +33,7 @@
     "@babel/preset-react": "^7.10.4",
     "babel-loader": "^8.1.0",
     "css-loader": "^4.2.1",
+    "csv-writer": "^1.6.0",
     "eslint": "^7.6.0",
     "faker": "^4.1.0",
     "fs": "0.0.1-security",

@@ -1,6 +1,6 @@
 const fs = require('fs');
-// const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 const faker = require('faker');
+// const createCsvWriter = require('csv-writer').createObjectCsvWriter;
 
 // const csvWriter = createCsvWriter({
 //   path: '../CSV/products.csv',
@@ -21,11 +21,6 @@ const faker = require('faker');
 // .then(() => {
 //     console.log('...Done');
 // });
-
-const writeProducts = fs.createWriteStream('../CSV/products.csv');
-writeProducts.write('product_id,product_name,link_to,img\n', 'utf8');
-const writePrices = fs.createWriteStream('../CSV/prices.csv');
-writePrices.write('date_of,id_of\n', 'utf-8');
 
 /* 
 productWriter
@@ -81,6 +76,11 @@ if week is 10
 month is 10
 day is 3
 */
+const writeProducts = fs.createWriteStream('../CSV/products.csv');
+writeProducts.write('product_id,product_name,link_to,img\n', 'utf8');
+const writePrices = fs.createWriteStream('../CSV/prices.csv');
+writePrices.write('date_of,price,id_of\n', 'utf-8');
+
 
 const dateGenerator = (week) => {
   if (week === 1) return '2020-08-01';
@@ -96,14 +96,23 @@ const dateGenerator = (week) => {
 }
 
 const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback) => {
-  function getRandomIntInclusive(min, max) {
+  const getRandomIntInclusive = (min, max) => {
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min + 1)) + min; 
   };
 
+  const genRand = (min, max, decimalPlaces) => {  
+    var rand = Math.random()*(max-min) + min;
+    var power = Math.pow(10, decimalPlaces);
+    return Math.floor(rand*power) / power;
+};
+
   let i = 500000;
   let id = 2000
+  let week = 0;
+  let price10Count = 10;
+  let price = genRand(5,80,2);
   
   const write = () => {
     let ok = true;
@@ -117,9 +126,35 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
       const link_to = targetURL;
       const img =  faker.image.imageUrl();
       const productData = `${product_id},${product_name},${product_url},${link_to},${link_to},${img}\n`;
-      let week = 1;
-      const date_of = '' //psql default is yyy-mm-dd
-      const priceData = ``
+      let priceOk = true;
+        do {
+            price10Count -= 1;
+            if (week === 9) {
+              week = 1
+              price = genRand(5,80,2);
+          }; //reset month to agust for new product
+            if (week === 1) {week = 0}
+            week += 1;
+            const date_of = dateGenerator(week);
+            const id_of = product_id;
+            const priceChange = getRandomIntInclusive(1,5);
+            const lessOrMore = getRandomIntInclusive(0,1);
+            if (lessOrMore) {
+              price += priceChange;
+            } else {
+              price -= priceChange;
+            }
+            const priceData = `${date_of},${price},${id_of}\n`;
+            if (price10Count === 0) {
+              priceWriter.write(priceData, encoding, callback);
+            } else {
+              priceOk = priceWriter.write(priceData);
+            }
+        } while (price10Count > 0 && priceOk);
+        if (price10Count > 0) {
+          priceWriter.once('drain',write);
+        }
+
 
       if (i === 0) {
         productWriter.write(productData, encoding, callback);
@@ -134,6 +169,8 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
   write();
 }
 
-writeFiveHundredThousand(writeProducts, null, 'utf-8', () => {
+writeFiveHundredThousand(writeProducts, writePrices, 'utf-8', () => {
   writeProducts.end();
+  writePrices.end();
+
 })

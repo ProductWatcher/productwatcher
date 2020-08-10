@@ -146,7 +146,7 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
             }
             const priceData = `${date_of},${price},${id_of}\n`;
             if (price10Count === 0) {
-              priceWriter.write(priceData, encoding, callback);
+              priceWriter.write(priceData, encoding);
             } else {
               priceOk = priceWriter.write(priceData);
             }
@@ -172,5 +172,4 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
 writeFiveHundredThousand(writeProducts, writePrices, 'utf-8', () => {
   writeProducts.end();
   writePrices.end();
-
 })

@@ -19,7 +19,7 @@ DROP TABLE IF EXISTS price_data;
 CREATE TABLE price_data (
   price_id SERIAL PRIMARY KEY,
   date_of DATE NOT NULL DEFAULT CURRENT_DATE,
-  price integer,
+  price numeric,
   id_of integer
 );
 

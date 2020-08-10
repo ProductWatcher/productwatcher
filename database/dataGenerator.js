@@ -111,13 +111,13 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
   let i = 500000;
   let id = 2000
   let week = 0;
-  let price10Count = 10;
-  let price = genRand(5,80,2);
+  let price = genRand(10,80,2);
   
   const write = () => {
     let ok = true;
     do {
       i -= 1;
+      let price10Count = 10;
       const incrementBy = getRandomIntInclusive(1,255);
       const product_id = id += incrementBy;
       const product_name = faker.commerce.productName();
@@ -129,17 +129,16 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
       let priceOk = true;
         do {
             price10Count -= 1;
-            if (week === 9) {
-              week = 1
+            if (week === 11) {
+              week = 0
               price = genRand(5,80,2);
-          }; //reset month to agust for new product
-            if (week === 1) {week = 0}
-            week += 1;
+            }; //reset month to agust for new product and generate new price for new product
+            week += 1; // to do: week logic does not reset properly, first week results in undefined, second week is set as 2020-08-01
             const date_of = dateGenerator(week);
             const id_of = product_id;
             const priceChange = getRandomIntInclusive(1,5);
             const lessOrMore = getRandomIntInclusive(0,1);
-            if (lessOrMore) {
+            if (lessOrMore) { // to do: pice goes beyond hundredths place -> 3.9499999999999993
               price += priceChange;
             } else {
               price -= priceChange;
@@ -152,7 +151,7 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
             }
         } while (price10Count > 0 && priceOk);
         if (price10Count > 0) {
-          priceWriter.once('drain',write);
+          priceWriter.once('drain',write); // to do: runs out of memory, stalls out
         }
 
 

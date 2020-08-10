@@ -131,7 +131,7 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
             price10Count -= 1;
             if (week === 11) {
               week = 0
-              price = genRand(5,80,2);
+              price = genRand(10,80,2);
             }; //reset month to agust for new product and generate new price for new product
             week += 1; // to do: week logic does not reset properly, first week results in undefined, second week is set as 2020-08-01
             const date_of = dateGenerator(week);

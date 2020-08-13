@@ -1,5 +1,8 @@
 const fs = require('fs');
 const faker = require('faker');
+fs.unlinkSync('../CSV/prices.csv');
+fs.unlinkSync('../CSV/products.csv');
+
 
 require('events').EventEmitter.prototype._maxListeners = 1000;
 require('events').defaultMaxListeners = 1000;
@@ -30,22 +33,24 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
     return Math.floor(Math.random() * (max - min + 1)) + min; 
   };
 
+  const roundUp= (num) => {
+    return Math.ceil(num * 100) / 100;
+}
+
   const genRand = (min, max, decimalPlaces) => {  
     var rand = Math.random()*(max-min) + min;
     var power = Math.pow(10, decimalPlaces);
     return Math.floor(rand*power) / power;
 };
 
-  let i = 500;
+  let i = 50;
   let id = 2000
-  let week = 0;
-  let price = genRand(10,80,2);
   
   const write = () => {
     let ok = true;
+    let priceOk = true;
     do {
       i -= 1;
-      let price10Count = 2;
       const incrementBy = getRandomIntInclusive(1,255);
       const product_id = id += incrementBy;
       const product_name = faker.commerce.productName();
@@ -54,13 +59,15 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
       const link_to = targetURL;
       const img =  faker.image.imageUrl();
       const productData = `${product_id},${product_name},${link_to},${link_to},${img}\n`;
-      let priceOk = true;
+      let price = genRand(10,80,2);
+      let price10Count = 10;
+      let week = 0;
+      
         do {
             price10Count -= 1;
-            if (week === 10) {
-              week = 0
-              price = genRand(10,80,2);
-            }; //reset month to agust for new product and generate new price for new product
+            if (week === 6) {
+              break;
+            }; 
             week += 1; 
             const date_of = dateGenerator(week);
             const id_of = product_id;
@@ -71,7 +78,8 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
             } else {
               price -= priceChange;
             }
-            const priceData = `${date_of},${price},${id_of}\n`;
+            
+            const priceData = `${date_of},${roundUp(price)},${id_of}\n`;
             if (price10Count === 0) {
               priceWriter.write(priceData, encoding);
             } else {
@@ -81,7 +89,6 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
         if (price10Count > 0) {
           priceWriter.once('drain',write); // to do: runs out of memory, stalls out
         }
-
 
       if (i === 0) {
         productWriter.write(productData, encoding, callback);

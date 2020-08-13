@@ -26,29 +26,29 @@ const dateGenerator = (week) => {
   if (week === 10) return '2020-10-3';
 }
 
-const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback) => {
-  const getRandomIntInclusive = (min, max) => {
-    min = Math.ceil(min);
-    max = Math.floor(max);
-    return Math.floor(Math.random() * (max - min + 1)) + min; 
-  };
+const getRandomIntInclusive = (min, max) => {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min; 
+};
 
-  const roundUp= (num) => {
-    return Math.ceil(num * 100) / 100;
+const roundUp= (num) => {
+  return Math.ceil(num * 100) / 100;
 }
 
-  const genRand = (min, max, decimalPlaces) => {  
-    var rand = Math.random()*(max-min) + min;
-    var power = Math.pow(10, decimalPlaces);
-    return Math.floor(rand*power) / power;
+const genRand = (min, max, decimalPlaces) => {  
+  var rand = Math.random()*(max-min) + min;
+  var power = Math.pow(10, decimalPlaces);
+  return Math.floor(rand*power) / power;
 };
+
+const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback) => {
 
   let i = 50;
   let id = 2000
   
   const write = () => {
     let ok = true;
-    let priceOk = true;
     do {
       i -= 1;
       const incrementBy = getRandomIntInclusive(1,255);
@@ -58,16 +58,14 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
       const targetURL = `https://www.target.com/${product_url}/-/A-${id}`
       const link_to = targetURL;
       const img =  faker.image.imageUrl();
-      const productData = `${product_id},${product_name},${link_to},${link_to},${img}\n`;
+      const productData = `${product_id},${product_name},${link_to},${img}\n`;
       let price = genRand(10,80,2);
-      let price10Count = 10;
+      let price10Count = 11;
       let week = 0;
-      
+      let priceOk = true;
         do {
             price10Count -= 1;
-            if (week === 6) {
-              break;
-            }; 
+            if (price10Count === 0) break;
             week += 1; 
             const date_of = dateGenerator(week);
             const id_of = product_id;
@@ -81,7 +79,7 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
             
             const priceData = `${date_of},${roundUp(price)},${id_of}\n`;
             if (price10Count === 0) {
-              priceWriter.write(priceData, encoding);
+              priceWriter.write(priceData, encoding, callback);
             } else {
               priceOk = priceWriter.write(priceData, encoding);
             }
@@ -89,17 +87,20 @@ const writeFiveHundredThousand = (productWriter, priceWriter, encoding, callback
         if (price10Count > 0) {
           priceWriter.once('drain',write); // to do: runs out of memory, stalls out
         }
-
+        console.log(i)
+        
       if (i === 0) {
         productWriter.write(productData, encoding, callback);
       } else {
         ok = productWriter.write(productData, encoding);
       }
+
     } while (i > 0 && ok);
     if (i > 0) {
       productWriter.once('drain', write);
     }
   }
+
   write();
 }
 

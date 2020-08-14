@@ -13,8 +13,8 @@ const pool = new Pool({
   port: 5432,
 })
 
-const test = (cb) => {
-  const query = `select * from products`
+const getByTCIN = (tcin, cb) => {
+  const query = `select * from products WHERE product_id = ${tcin}`
   pool.query(query, (err, res) => {
     if (err) {
       console.log(err.stack);
@@ -25,4 +25,4 @@ const test = (cb) => {
   })
 }
 
-module.exports = {test}
+module.exports = {getByTCIN}

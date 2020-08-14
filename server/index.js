@@ -12,12 +12,14 @@ app.use(
   })
 )
 
-app.get('/', (req, res) => {
-  db.test((err, users) => {
+app.get('/products/product/:tcin', (req, res) => {
+  const tcin = req.params.tcin
+  db.getByTCIN(tcin, (err, product) => {
     if (err) {
       res.status(404).send(err);
     } else {
-      res.status(200).send(users);
+      console.log(product)
+      res.status(200).send(product);
     }
   })
 })

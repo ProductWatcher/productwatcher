@@ -12,7 +12,7 @@ app.use(
   })
 )
 
-app.get('/products/product/:tcin', (req, res) => {
+app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
   const tcin = req.params.tcin
   db.getByTCIN(tcin, (err, product) => {
     if (err) {
@@ -20,6 +20,17 @@ app.get('/products/product/:tcin', (req, res) => {
     } else {
       console.log(product)
       res.status(200).send(product);
+    }
+  })
+})
+
+app.get('/products/:name', (req, res) => { // pattern match by name
+  const name = req.params.name;
+  db.searchByName(name, (err, products) => {
+    if (err) {
+      res.status(404).send(err);
+    } else {
+      res.status(200).send(products);
     }
   })
 })

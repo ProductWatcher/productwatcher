@@ -25,4 +25,18 @@ const getByTCIN = (tcin, cb) => {
   })
 }
 
-module.exports = {getByTCIN}
+const searchByName = (name, cb) => {
+  const query = `select * from products where product_name ilike '${name}%' order by 1;`
+  pool.query(query, (err, res) => {
+    if (err) {
+      console.log(err.stack);
+      cb(err.stack, null);
+    } else {
+      cb (null, res.rows);
+    }
+  })
+}
+
+module.exports = {getByTCIN, searchByName}
+
+// select * from products where product_name ilike 'string%' order by 1;

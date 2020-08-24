@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 const port = 3000;
 const db = require('../database/index.js')
@@ -11,6 +12,9 @@ app.use(
     extended: true,
   })
 )
+
+
+app.use(express.static(path.join(__dirname, '/../client/public')))
 
 app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
   const tcin = req.params.tcin

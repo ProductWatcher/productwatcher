@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const path = require('path');
 const app = express();
 const port = 3000;
 const db = require('../database/index.js')
@@ -12,7 +13,9 @@ app.use(
   })
 )
 
-app.get('/', (req, res) => {
+app.use(express.static(path.join(__dirname, '/../client/public')))
+
+app.get('/data', (req, res) => {
   db.test((err, users) => {
     if (err) {
       res.status(404).send(err);

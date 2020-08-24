@@ -40,3 +40,20 @@ const searchByName = (name, cb) => {
 module.exports = {getByTCIN, searchByName}
 
 // select * from products where product_name ilike 'string%' order by 1;
+
+/* 
+
+
+    {
+        "product_id": 4525,
+        "product_name": "Handmade Rubber Shirt",
+        "link_to": "https://www.target.com/Handmade-Rubber-Shirt/-/A-4525",
+        "img": "http://lorempixel.com/640/480",
+        "prices" :  [
+          {},
+          {},
+          {},
+        ]
+    },
+    
+*/

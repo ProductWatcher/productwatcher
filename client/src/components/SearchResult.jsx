@@ -9,7 +9,6 @@ class SearchResult extends React.Component {
     }
   }
   render() {
-    console.log(product)
     const { product } = this.state;
     return (
       <div className={styles.Product}>

@@ -8,39 +8,65 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: []
+      data: [],
+      searchTerm: ''
     };
+    this.onChangeHandler = this.onChangeHandler.bind(this);
+    this.onSubmitHandler = this.onSubmitHandler.bind(this);
   }
+  
   componentDidMount() {
-    axios.get('/data').then(({ data }) => {
+    axios.get('/products', { params: { name: '' } }).then(({ data }) => {
       this.setState({ data });
     });
   }
 
+  onChangeHandler(event) {
+    this.setState({
+      searchTerm: event.target.value
+    });
+  }
+
+  onSubmitHandler() {
+    event.preventDefault();
+    console.log('searchTerm:', this.state.searchTerm);
+    axios
+      .get('/products', { params: { name: this.state.searchTerm } })
+      .then(({ data }) => {
+        this.setState({ data });
+      });
+  }
+
   render() {
     const { data } = this.state;
-    console.log(data);
+    let results;
     if (data.length > 0) {
-      return (
-        <div className={styles.app}>
-          <form>
-            <input type="text" placeholder="Search for product" />
-            <input type="submit" />
-          </form>
-          <div className={styles.searchResult}>
-            <div className={styles.productEntries}>
-              {data.map((product, index) => {
-                if (index < 10) {
-                  return <SearchResult product={product} />;
-                }
-              })}
-            </div>
+      results = (
+        <div className={styles.searchResult}>
+          <div className={styles.productEntries}>
+            {data.map((product, index) => {
+              if (index < 10) {
+                return <SearchResult product={product} />;
+              }
+            })}
           </div>
         </div>
       );
-    } else {
-      return <div>Hello</div>;
     }
+
+    return (
+      <div className={styles.app}>
+        <form onSubmit={this.onSubmitHandler}>
+          <input
+            type="text"
+            placeholder="Search for product"
+            onChange={this.onChangeHandler}
+          />
+          <input type="submit" value="Search" />
+        </form>
+        {results}
+      </div>
+    );
   }
 }
 

@@ -14,7 +14,7 @@ const pool = new Pool({
 })
 
 const pricesByTCIN = (tcin, cb) => {
-  const query = `select * from products WHERE product_id = ${tcin}`
+  const query = `select * from price_data WHERE id_of = ${tcin}`
   pool.query(query, (err, res) => {
     if (err) {
       console.log(err.stack);

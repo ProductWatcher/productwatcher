@@ -26,7 +26,7 @@ const getByTCIN = (tcin, cb) => {
 }
 
 const searchByName = (name, cb) => {
-  const query = `select * from products where product_name ilike '${name}%' order by 1;`
+  const query = `select * from products where product_name ilike '%${name}%' order by 1;`
   pool.query(query, (err, res) => {
     if (err) {
       console.log(err.stack);

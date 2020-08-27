@@ -13,7 +13,7 @@ const pool = new Pool({
   port: 5432,
 })
 
-const getByTCIN = (tcin, cb) => {
+const pricesByTCIN = (tcin, cb) => {
   const query = `select * from products WHERE product_id = ${tcin}`
   pool.query(query, (err, res) => {
     if (err) {
@@ -25,18 +25,19 @@ const getByTCIN = (tcin, cb) => {
   })
 }
 
-const searchByName = (name, cb) => {
+const productsByName = (name, cb) => {
   const query = `select * from products where product_name ilike '%${name}%' order by 1;`
   pool.query(query, (err, res) => {
     if (err) {
       console.log(err.stack);
       cb(err.stack, null);
     } else {
+      console.log(res.rows)
       cb (null, res.rows);
     }
   })
 }
 
-module.exports = {getByTCIN, searchByName}
+module.exports = {pricesByTCIN, productsByName}
 
 // select * from products where product_name ilike 'string%' order by 1;

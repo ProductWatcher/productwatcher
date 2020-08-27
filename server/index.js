@@ -30,7 +30,7 @@ app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
 
 app.get('/products/:name', (req, res) => { // pattern match by name
   const name = req.params.name;
-  db.searchByName(name, (err, products) => {
+  db.productsByName(name, (err, products) => {
     if (err) {
       res.status(404).send(err);
     } else {

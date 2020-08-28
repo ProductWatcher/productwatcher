@@ -16,13 +16,12 @@ app.use(
 
 app.use(express.static(path.join(__dirname, '/../client/public')))
 
-app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
-  const tcin = req.params.tcin
+app.get('/products/product', (req, res) => { // search specific TCIN
+  const tcin = req.query.product_id
   db.pricesByTCIN(tcin, (err, product) => {
     if (err) {
       res.status(404).send(err);
     } else {
-      console.log(product)
       res.status(200).send(product);
     }
   })

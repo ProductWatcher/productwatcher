@@ -28,8 +28,8 @@ app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
   })
 })
 
-app.get('/products/:name', (req, res) => { // pattern match by name
-  const name = req.params.name;
+app.get('/products', (req, res) => { // pattern match by name
+  const name = req.query.name;
   db.productsByName(name, (err, products) => {
     if (err) {
       res.status(404).send(err);

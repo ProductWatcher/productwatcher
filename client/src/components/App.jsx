@@ -15,11 +15,11 @@ class App extends React.Component {
     this.onSubmitHandler = this.onSubmitHandler.bind(this);
   }
   
-  componentDidMount() {
-    axios.get('/products', { params: { name: '' } }).then(({ data }) => {
-      this.setState({ data });
-    });
-  }
+  // componentDidMount() {
+  //   axios.get('/products', { params: { name: '' } }).then(({ data }) => {
+  //     this.setState({ data });
+  //   });
+  // }
 
   onChangeHandler(event) {
     this.setState({
@@ -32,9 +32,11 @@ class App extends React.Component {
     console.log('searchTerm:', this.state.searchTerm);
     axios
       .get('/products', { params: { name: this.state.searchTerm } })
-      .then(({ data }) => {
-        this.setState({ data });
-      });
+      .then((response) => {
+        console.log('response:', response.data)
+        this.setState({ data: response.data });
+      })
+      .catch((error) => console.log('Theres an error:', error));
   }
 
   render() {
@@ -46,7 +48,7 @@ class App extends React.Component {
           <div className={styles.productEntries}>
             {data.map((product, index) => {
               if (index < 10) {
-                return <SearchResult product={product} />;
+                return <SearchResult product={product} key={product.product_id} />;
               }
             })}
           </div>

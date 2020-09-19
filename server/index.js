@@ -16,8 +16,8 @@ app.use(
 
 app.use(express.static(path.join(__dirname, '/../client/public')))
 
-app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
-  const tcin = req.params.tcin
+app.get('/products/product', (req, res) => { // search specific TCIN
+  const tcin = req.query.product_id
   db.getByTCIN(tcin, (err, product) => {
     if (err) {
       res.status(404).send(err);
@@ -28,8 +28,8 @@ app.get('/products/product/:tcin', (req, res) => { // search specific TCIN
   })
 })
 
-app.get('/products/:name', (req, res) => { // pattern match by name
-  const name = req.params.name;
+app.get('/products', (req, res) => { // pattern match by name
+  const name = req.query.name;
   db.searchByName(name, (err, products) => {
     if (err) {
       res.status(404).send(err);
